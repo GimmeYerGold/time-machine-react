@@ -37,9 +37,89 @@ import DOM from 'react-dom'
 import React, {Component} from 'react'
 
 function app() {
-    // start app
+
+	// start app
     // new Router()
-    DOM.render(<p>test 2</p>, document.querySelector('.container'))
+
+var AppView = React.createClass({
+
+	render: function(){
+
+		return (
+			<div className="timeContainer">
+			<h1 className="timeTitle">CHRONOS EX MACHINA</h1>
+			<TimeZone currentYear="2016"/>
+		</div>
+	)
+	}	
+})
+
+var TimeZone = React.createClass({
+	render: function(){
+
+		return (
+			<div className="timeZone">
+				<p>{this.state.year}</p>
+			
+			<div className="buttons">
+				<button onClick={this._goForward} className="Forward">Foward</button>
+				<button onClick={this._goBack} className="Back">Back</button>
+			</div>
+			</div>
+		)
+	},
+
+	_goForward: function() {
+		console.log(this.state.year)
+		if(!this.state.ticking) {
+			var intoTheFuture = function() {
+				this.setState({
+					year: this.state.year + 1,
+					ticking: true
+				})
+			}
+			var boundIncrementer = intoTheFuture.bind(this)
+			this.intervalId = setInterval(boundIncrementer, 50)	
+		}
+
+		else {
+			clearInterval(this.intervalId)
+			this.setState({
+				ticking: false
+			})
+		}
+	},
+
+	_goBack: function(){
+		console.log(this.state.year)
+		if(!this.state.ticking) {
+			var intoThePast = function() {
+				this.setState({
+					year: this.state.year - 1,
+					ticking: true
+				})
+			}
+			var boundDecrementer = intoThePast.bind(this)
+			this.intervalId = setInterval(boundDecrementer, 50)	
+		}
+
+		else {
+			clearInterval(this.intervalId)
+			this.setState({
+				ticking: false
+			})
+		}
+	},
+
+	getInitialState: function() {
+		return {
+			year: parseInt(this.props.currentYear),
+			ticking: false
+		}
+	}
+})
+
+    DOM.render(<AppView />, document.querySelector('.container'))
 }
 
 app()
